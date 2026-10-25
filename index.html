@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Landlord Deposit Deduction Kit — Keep Only What You Can Defend</title>
+<style>
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;max-width:760px;margin:0 auto;padding:24px;line-height:1.55;color:#1a1a1a}
+h1{font-size:1.9em}h2{margin-top:2em;border-top:2px solid #111;padding-top:.4em}
+.card{border:1px solid #ccc;border-radius:10px;padding:16px;margin:12px 0}
+label{display:block;margin:10px 0 4px;font-weight:600}
+input,select,textarea{width:100%;padding:8px;font-size:1em;box-sizing:border-box}
+button{background:#111;color:#fff;border:0;padding:10px 18px;border-radius:6px;font-size:1em;cursor:pointer}
+button:hover{background:#333}
+.result{background:#f2f7f2;border:1px solid #9c9;padding:14px;border-radius:8px;margin-top:12px}
+.warn{background:#fff8e6;border:1px solid #e6c200;padding:14px;border-radius:8px;margin-top:12px}
+.small{font-size:.9em;color:#555}
+.check{margin:8px 0}
+.crosssell{border:2px solid #111;border-radius:10px;padding:16px;margin-top:2em}
+table{width:100%;border-collapse:collapse;margin-top:10px}
+th,td{border:1px solid #ccc;padding:6px;text-align:left;font-size:.95em}
+.dedRow td input{width:100%}
+pre{white-space:pre-wrap;background:#f6f6f6;padding:12px;border-radius:8px}
+</style>
+</head>
+<body>
+<h1>Landlord Deposit Deduction Kit</h1>
+<p><strong>Keep only what you can defend.</strong> A wrong deduction doesn't just cost you the amount — in several states it costs you double or triple, plus the tenant's attorney fees. This kit turns a move-out into a defensible file: diagnose whether each deduction is lawful, generate the itemized statement, and validate it before anything goes in the mail.</p>
+<p class="small">A preparation tool, not legal advice. State rules change and local ordinances can be stricter — confirm your state's current statute before you send. Deadlines and penalties below are drawn from the statutes cited in each section.</p>
+
+<h2>Part 1 — Diagnostic: Is this deduction lawful?</h2>
+<p>Work through one deduction at a time. The most common landlord loss in small claims isn't a bad repair — it's deducting for normal wear and tear, missing the deadline, or itemizing vaguely.</p>
+<div class="card" id="diag">
+<label>Your state
+<select id="dState">
+<option value="">— choose —</option>
+<option value="CA">California</option>
+<option value="TX">Texas</option>
+<option value="FL">Florida</option>
+<option value="MA">Massachusetts</option>
+<option value="OR">Oregon</option>
+<option value="OTHER">Other / not listed</option>
+</select></label>
+<label>Move-out date <input id="dMoveout" type="date"></label>
+<label>Today's date <input id="dToday" type="date"></label>
+<p><strong>For your single largest deduction, check every statement that is true:</strong></p>
+<label class="check"><input type="checkbox" class="dq" data-w="2"> The damage is beyond normal wear and tear (not scuffs, faded paint, worn carpet in traffic areas, or dusty blinds)</label>
+<label class="check"><input type="checkbox" class="dq" data-w="2"> I have move-in AND move-out photos (or a signed condition report) showing the change</label>
+<label class="check"><input type="checkbox" class="dq" data-w="2"> I have a receipt, paid invoice, or written bid for the exact amount — not a round-number guess</label>
+<label class="check"><input type="checkbox" class="dq" data-w="1"> The tenant was given the required pre-move-out inspection opportunity, where my state requires one</label>
+<label class="check"><input type="checkbox" class="dq" data-w="1"> I have the tenant's forwarding address (or proof I asked for it)</label>
+<label class="check"><input type="checkbox" class="dq" data-w="-3"> The item is something I would replace between any tenants anyway (repainting after a multi-year tenancy, carpet at end of life)</label>
+<label class="check"><input type="checkbox" class="dq" data-w="-3"> I am charging for work not yet done, with no bid or estimate to support the number</label>
+<label class="check"><input type="checkbox" class="dq" data-w="-3"> The deduction is a lump sum ("cleaning and repairs: $800") with no itemization</label>
+<button onclick="diagnose()">Score this deduction</button>
+<div id="diagOut"></div>
+</div>
+
+<h2>Part 2 — Generator: Your itemized deduction statement</h2>
+<p>Add one row per deduction. The generator totals everything, computes the refund, and writes the letter. Vague rows are the ones judges cut — describe the item, the room, and the proof.</p>
+<div class="card">
+<label>Landlord / manager name <input id="gLandlord" type="text" placeholder="Jordan Lee"></label>
+<label>Tenant name(s) <input id="gTenant" type="text" placeholder="Alex Morgan"></label>
+<label>Tenant forwarding address <input id="gAddr" type="text" placeholder="123 New St, City, ST 00000"></label>
+<label>Rental property address + unit <input id="gProp" type="text" placeholder="456 Rental Ave, Unit B, City, ST 00000"></label>
+<label>Original security deposit ($) <input id="gDeposit" type="number" value="1500"></label>
+<label>State for deadline/penalty rules
+<select id="gState">
+<option value="">— choose —</option>
+<option value="CA">California — 21 days, up to 2× in bad faith (Civ. Code §1950.5)</option>
+<option value="TX">Texas — 30 days, $100 + 3× + fees (Prop. Code §92.109)</option>
+<option value="FL">Florida — 30 days to claim / 15 to return if no claim; miss it and the claim is forfeited (§83.49)</option>
+<option value="MA">Massachusetts — 30 days, 3× + 5% interest + fees (Ch. 186 §15B)</option>
+<option value="OR">Oregon — 31 days, up to 2× wrongfully withheld (ORS 90.300)</option>
+<option value="OTHER">Other — verify your statute before sending</option>
+</select></label>
+<table id="dedTable">
+<tr><th>Description (item + room + cause)</th><th>Proof (receipt / bid / photo)</th><th>Amount ($)</th><th></th></tr>
+<tr class="dedRow"><td><input class="dDesc" type="text" placeholder="e.g. Bedroom hardwood: deep scratches, refinish bid"></td><td><input class="dProof" type="text" placeholder="e.g. Bid from FloorCo, dated"></td><td><input class="dAmt" type="number" value="0"></td><td><button onclick="this.closest('tr').remove();calcTotals()">✕</button></td></tr>
+</table>
+<button onclick="addRow()">+ Add deduction row</button>
+<p><strong>Total deductions: $<span id="totDed">0.00</span> &nbsp;|&nbsp; Refund due: $<span id="totRef">0.00</span></strong></p>
+<button onclick="genLetter()">Generate my itemized statement letter</button>
+<div id="letterOut"></div>
+</div>
+
+<h2>Part 3 — Validator: Pre-send check</h2>
+<p>Do not mail until every box is honestly checked. One failed box is how a $660 deduction becomes a $1,320 judgment.</p>
+<div class="card" id="val">
+<label class="check"><input type="checkbox" class="vq"> Every deduction is itemized with a specific description — no lump sums</label>
+<label class="check"><input type="checkbox" class="vq"> No deduction is for normal wear and tear</label>
+<label class="check"><input type="checkbox" class="vq"> Every dollar has a receipt, paid invoice, or written bid attached</label>
+<label class="check"><input type="checkbox" class="vq"> The statement is inside my state's deadline (see Part 1) — or I know exactly how many days I have left</label>
+<label class="check"><input type="checkbox" class="vq"> I am sending it by my state's required method (certified mail where required) and keeping a copy + mailing proof</label>
+<label class="check"><input type="checkbox" class="vq"> The refund check (if any) is enclosed, and the math in the letter matches my ledger</label>
+<label class="check"><input type="checkbox" class="vq"> I read the letter once as the tenant's lawyer — nothing in it is vague, angry, or unsupported</label>
+<button onclick="validate()">Validate my statement</button>
+<div id="valOut"></div>
+</div>
+
+<h2>The wear-vs-damage cheat sheet</h2>
+<div class="card">
+<p><strong>Usually wear (don't deduct):</strong> light scuffs, faded paint, worn carpet in traffic lanes, dusty blinds, small nail holes, worn finish on floors from normal use, appliance age.</p>
+<p><strong>Usually damage (deductible with proof):</strong> large holes in walls, burns, broken fixtures, pet-stained carpet beyond cleaning, unauthorized paint colors, missing items, damage documented as new at move-in and broken at move-out.</p>
+<p><strong>The test a judge applies:</strong> did the tenant leave it worse than ordinary use would — and can you prove it with before/after evidence? If either answer is soft, cut the deduction. A smaller defensible statement beats a bigger one that gets thrown out whole.</p>
+</div>
+
+<div class="crosssell">
+<h2>Complete the landlord journey</h2>
+<p><strong>Pair with the First-Time Landlord Launch Kit ($25)</strong> — the kit that set up the tenancy this move-out closes: screening, lease, and move-in documentation. Move-in evidence is what makes move-out deductions defensible, so the two kits are built to be used together.</p>
+<p class="small">Proposed bundle (pending Steven's approval, not yet created): <strong>Landlord Move-Out Bundle — $45</strong> (Launch Kit + this Deduction Kit, combined minus ~10%).</p>
+<p class="small">Tenant-side mirror: the Deposit Back Kit ($25) is the same deposit from the tenant's side — useful to know what a well-prepared tenant will argue.</p>
+</div>
+
+<script>
+const RULES = {
+  CA:{days:21,pen:"up to 2× the deposit in bad faith (Civ. Code §1950.5)"},
+  TX:{days:30,pen:"$100 + 3× the amount wrongfully withheld + attorney fees (Prop. Code §92.109)"},
+  FL:{days:30,pen:"forfeiture of the right to claim deductions (§83.49)"},
+  MA:{days:30,pen:"3× the amount wrongfully withheld + 5% interest + attorney fees (Ch. 186 §15B)"},
+  OR:{days:31,pen:"up to 2× the amount wrongfully withheld (ORS 90.300)"}
+};
+function diagnose(){
+  const st=document.getElementById('dState').value;
+  const mo=document.getElementById('dMoveout').value, td=document.getElementById('dToday').value;
+  let score=0; document.querySelectorAll('.dq').forEach(c=>{if(c.checked) score+=+c.dataset.w;});
+  let out='';
+  if(st && RULES[st]){
+    out+='<p><strong>'+st+' deadline: '+RULES[st].days+' days.</strong> Penalty risk: '+RULES[st].pen+'.</p>';
+    if(mo && td){
+      const days=Math.round((new Date(td)-new Date(mo))/86400000);
+      const left=RULES[st].days-days;
+      out+= left<0 ? '<p class="warn"><strong>⚠ Deadline blown by '+(-left)+' days.</strong> In several states that alone forfeits the deduction — get this out today and get advice before withholding anything.</p>'
+                     : '<p>You are '+days+' days past move-out. <strong>'+left+' days left</strong> on the '+st+' clock.</p>';
+    }
+  } else if(st==='OTHER'){
+    out+='<p class="warn"><strong>Your state is not in our verified list.</strong> Look up your state deposit statute before deducting anything — the deadline is the whole ballgame, and it ranges from 14 to 60 days by state.</p>';
+  } else { out+='<p class="warn">Pick your state to see the deadline and penalty math.</p>'; }
+  if(score>=5) out+='<div class="result"><strong>Defensible.</strong> Score '+score+'. This deduction has the three things judges look for: real damage, before/after proof, and a supported number. Run it through the generator and the Part 3 validator before sending.</div>';
+  else if(score>=2) out+='<div class="warn"><strong>Shaky — score '+score+'.</strong> You are missing at least one leg of the stool (damage vs. wear, proof, or a supported number). Fix the gap or cut the deduction; a partial statement that holds up beats a full one that gets tossed.</div>';
+  else out+='<div class="warn"><strong>Do not deduct this — score '+score+'.</strong> As it stands this is the kind of deduction tenants win back, sometimes multiplied. Either gather the missing proof or return the money.</div>';
+  document.getElementById('diagOut').innerHTML=out;
+}
+function addRow(){
+  const tr=document.createElement('tr'); tr.className='dedRow';
+  tr.innerHTML='<td><input class="dDesc" type="text" placeholder="Item + room + cause"></td><td><input class="dProof" type="text" placeholder="Receipt / bid / photo"></td><td><input class="dAmt" type="number" value="0"></td><td><button onclick="this.closest(\'tr\').remove();calcTotals()">✕</button></td>';
+  document.getElementById('dedTable').appendChild(tr);
+}
+function calcTotals(){
+  let tot=0; document.querySelectorAll('.dAmt').forEach(i=>{tot+=parseFloat(i.value)||0;});
+  const dep=parseFloat(document.getElementById('gDeposit').value)||0;
+  document.getElementById('totDed').textContent=tot.toFixed(2);
+  const ref=dep-tot;
+  document.getElementById('totRef').textContent=(ref>=0?ref.toFixed(2):'0.00 (tenant owes $'+(-ref).toFixed(2)+')');
+  return {tot,dep,ref};
+}
+document.addEventListener('input',calcTotals); calcTotals();
+function genLetter(){
+  const {tot,dep,ref}=calcTotals();
+  const st=document.getElementById('gState').value;
+  let rows=''; let ok=true;
+  document.querySelectorAll('.dedRow').forEach(r=>{
+    const d=r.querySelector('.dDesc').value.trim(), p=r.querySelector('.dProof').value.trim(), a=parseFloat(r.querySelector('.dAmt').value)||0;
+    if(!d||!p) ok=false;
+    rows+='  - '+d+' — $'+a.toFixed(2)+' (proof: '+p+')\n';
+  });
+  if(!rows) rows='  - (no deductions — full refund)\n';
+  const rule = RULES[st] ? 'This statement is provided within the '+RULES[st].days+'-day deadline under '+( {CA:'California Civ. Code §1950.5',TX:'Texas Prop. Code §92.109',FL:'Florida §83.49',MA:'Massachusetts Ch. 186 §15B',OR:'Oregon ORS 90.300'}[st] )+'.' : 'Confirm your state\'s deadline and delivery method before sending — this letter does not assert a deadline for unverified states.';
+  const letter='ITEMIZED STATEMENT OF SECURITY DEPOSIT DEDUCTIONS\n\nFrom: '+document.getElementById('gLandlord').value+'\nTo: '+document.getElementById('gTenant').value+', '+document.getElementById('gAddr').value+'\nProperty: '+document.getElementById('gProp').value+'\n\nOriginal security deposit: $'+dep.toFixed(2)+'\nItemized deductions:\n'+rows+'Total deductions: $'+tot.toFixed(2)+'\nRefund due: $'+(ref>=0?ref.toFixed(2):'0.00')+(ref<0?' (balance of $'+(-ref).toFixed(2)+' owed by tenant)':'')+'\n\n'+rule+'\nCopies of receipts, bids, and move-in/move-out evidence for each deduction are enclosed. This statement is not legal advice.';
+  let warn = ok ? '' : '<p class="warn"><strong>Warning:</strong> at least one row is missing a description or proof. Judges cut vague rows — fill every row before you send.</p>';
+  document.getElementById('letterOut').innerHTML=warn+'<pre>'+letter.replace(/</g,'&lt;')+'</pre><p class="small">Copy the letter above into your own document, attach the receipts, and send by your state\'s required method.</p>';
+}
+function validate(){
+  const boxes=document.querySelectorAll('.vq'); let done=0;
+  boxes.forEach(c=>{if(c.checked) done++;});
+  const total=boxes.length;
+  document.getElementById('valOut').innerHTML = done===total
+    ? '<div class="result"><strong>Ready to send.</strong> All '+total+' checks pass. Keep a copy of everything you mail, plus proof of the mailing date.</div>'
+    : '<div class="warn"><strong>Not ready: '+done+' of '+total+' checks pass.</strong> Fix the unchecked boxes first — each one is a way tenants win these disputes.</div>';
+}
+</script>
+</body>
+</html>
